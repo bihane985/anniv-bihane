@@ -152,21 +152,6 @@
             </div>
         </section>
 
-        <!-- Forum Section -->
-        <section id="forum" class="forum-section">
-            <h2>💬 Forum de discussion</h2>
-            <div class="forum-container">
-                <button @click="openForum" class="btn btn-primary forum-view-btn">
-                    Voir les messages ({{ forumMessages.length }})
-                </button>
-                <div class="forum-form">
-                    <input v-model="newMessagePrenom" type="text" placeholder="Votre prénom" class="forum-input">
-                    <textarea v-model="newMessageText" placeholder="Votre message..." class="forum-input forum-textarea" rows="3"></textarea>
-                    <button @click="sendMessage" class="btn btn-secondary forum-submit" :disabled="!newMessagePrenom.trim() || !newMessageText.trim()">Poster</button>
-                </div>
-            </div>
-        </section>
-
         <!-- Participants Section -->
         <section id="participants" class="participants-section">
             <h2>👥 Liste des participants</h2>
@@ -182,6 +167,21 @@
                     <button @click="sendParticipant" class="btn btn-primary participants-submit" :disabled="!newParticipantNom.trim() || !newParticipantPrenom.trim() || !newParticipantEmail.trim()">
                         S'inscrire
                     </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Forum Section -->
+        <section id="forum" class="forum-section">
+            <h2>💬 Forum de discussion</h2>
+            <div class="forum-container">
+                <button @click="openForum" class="btn btn-primary forum-view-btn">
+                    Voir les messages ({{ forumMessages.length }})
+                </button>
+                <div class="forum-form">
+                    <input v-model="newMessagePrenom" type="text" placeholder="Votre prénom" class="forum-input">
+                    <textarea v-model="newMessageText" placeholder="Votre message..." class="forum-input forum-textarea" rows="3"></textarea>
+                    <button @click="sendMessage" class="btn btn-secondary forum-submit" :disabled="!newMessagePrenom.trim() || !newMessageText.trim()">Poster</button>
                 </div>
             </div>
         </section>
