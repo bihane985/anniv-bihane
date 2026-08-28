@@ -14,7 +14,7 @@ createApp({
             // Event Details
             eventDate: "Samedi 24 Octobre 2026",
             eventLocation: "Auberge du Thélème, Beaumont (07170), Ardèche",
-            eventTime: "20h",
+            eventTime: "19h",
             
             // Info Section
             eventInfo: `
