@@ -233,6 +233,26 @@ createApp({
     },
     
     mounted() {
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+        if (mobileMenuToggle && mobileNavOverlay) {
+            mobileMenuToggle.addEventListener('click', () => {
+                mobileMenuToggle.classList.toggle('active');
+                mobileNavOverlay.classList.toggle('active');
+            });
+        }
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (mobileNavOverlay && mobileNavOverlay.classList.contains('active')) {
+                    mobileMenuToggle.classList.remove('active');
+                    mobileNavOverlay.classList.remove('active');
+                }
+            });
+        });
+        
         // Add smooth scrolling for all anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {

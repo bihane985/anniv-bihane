@@ -12,7 +12,10 @@
     <div id="app">
         <!-- Navigation Bar -->
         <nav class="navbar">
-            <ul class="nav-list">
+            <button class="nav-toggle" id="mobile-menu-toggle" aria-label="Menu">
+                <span class="hamburger"></span>
+            </button>
+            <ul class="nav-list desktop-nav" id="nav-list">
                 <li class="nav-item"><a href="#info" class="nav-link">Informations</a></li>
                 <li class="nav-item"><a href="#hebergements" class="nav-link">Hébergements</a></li>
                 <li class="nav-item"><a href="#localisation" class="nav-link">Localisation</a></li>
@@ -21,6 +24,18 @@
                 <li class="nav-item"><a href="#forum" class="nav-link">Forum</a></li>
             </ul>
         </nav>
+        
+        <!-- Mobile Navigation Overlay -->
+        <div class="mobile-nav-overlay" id="mobile-nav-overlay">
+            <ul class="mobile-nav-list">
+                <li class="nav-item"><a href="#info" class="nav-link">Informations</a></li>
+                <li class="nav-item"><a href="#hebergements" class="nav-link">Hébergements</a></li>
+                <li class="nav-item"><a href="#localisation" class="nav-link">Localisation</a></li>
+                <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                <li class="nav-item"><a href="#participants" class="nav-link">Participants</a></li>
+                <li class="nav-item"><a href="#forum" class="nav-link">Forum</a></li>
+            </ul>
+        </div>
 
         <!-- Hero Section -->
         <section class="hero">
@@ -156,14 +171,9 @@
         <section id="participants" class="participants-section">
             <h2>👥 Liste des participants</h2>
             <div class="participants-container">
-                <div class="participants-list">
-                    <div class="participants-header">
-                        <span>Participants inscrits ({{ participants.length }})</span>
-                        <button @click="openParticipants" class="btn btn-secondary participants-view-btn">
-                            Voir la liste
-                        </button>
-                    </div>
-                </div>
+                <button @click="openParticipants" class="btn btn-primary participants-view-btn">
+                    Voir la liste ({{ participants.length }} participants)
+                </button>
                 <div class="participants-form">
                     <h3>S'inscrire</h3>
                     <input v-model="newParticipantNom" type="text" placeholder="Votre nom" class="forum-input">
@@ -200,18 +210,16 @@
 
         <!-- Participants Modal -->
         <div v-if="showParticipantsModal" class="forum-modal-overlay" @click.self="closeParticipants">
-            <div class="forum-modal">
+            <div class="forum-modal participants-modal">
                 <div class="forum-modal-header">
                     <h2>👥 Liste des participants</h2>
                     <button @click="closeParticipants" class="forum-close-btn" title="Fermer">×</button>
                 </div>
                 <div class="forum-modal-body">
                     <div class="participants-messages-modal">
-                        <div v-for="(participant, index) in participants" :key="index" class="forum-message">
-                            <div class="forum-header">
-                                <span class="forum-author">{{ participant.prenom }} {{ participant.nom }}</span>
-                                <span class="forum-date">{{ participant.date }}</span>
-                            </div>
+                        <div v-for="(participant, index) in participants" :key="index" class="participant-item">
+                            <span class="participant-name">{{ participant.prenom }} {{ participant.nom }}</span>
+                            <span class="participant-date">{{ participant.date }}</span>
                         </div>
                         <p v-if="participants.length === 0" class="forum-empty">Aucun participant inscrit pour l'instant.</p>
                     </div>
