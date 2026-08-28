@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bihane a 30 ans !</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎉</text></svg>">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="#info" class="nav-link">Informations</a></li>
+                <li class="nav-item"><a href="#hebergements" class="nav-link">Hébergements</a></li>
+                <li class="nav-item"><a href="#localisation" class="nav-link">Localisation</a></li>
+                <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+                <li class="nav-item"><a href="#participants" class="nav-link">Participants</a></li>
+                <li class="nav-item"><a href="#forum" class="nav-link">Forum</a></li>
+            </ul>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="confetti">🎉</div>
+                <h1>{{ title }}</h1>
+                <p class="subtitle">{{ subtitle }}</p>
+                <div class="event-details">
+                    <div class="detail-item">
+                        <span class="icon">📅</span>
+                        <span>{{ eventDate }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="icon">📍</span>
+                        <span>{{ eventLocation }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="icon">🕒</span>
+                        <span>{{ eventTime }}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Section -->
+        <section id="info" class="info-section">
+            <h2>📋 Informations</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>🎂 L'événement</h3>
+                    <p v-html="eventInfo"></p>
+                </div>
+                <div class="info-card">
+                    <h3>🚗 Accès</h3>
+                    <p v-html="accessInfo"></p>
+                </div>
+                <div class="info-card info-card-coming-soon">
+                    <h3>🍽️ Menu</h3>
+                    <p v-html="menuInfo"></p>
+                </div>
+                <div class="info-card">
+                    <h3>🎁 Cadeaux</h3>
+                    <p v-html="giftsInfo"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accommodation Section -->
+        <section id="hebergements" class="accommodation-section">
+            <h2>🏨 Où loger ?</h2>
+            <p class="section-description">
+                Voici une sélection d'hébergements réels à Beaumont et ses alentours pour vous loger la nuit :
+            </p>
+            <div class="accommodation-grid">
+                <div v-for="(accommodation, index) in accommodations" :key="index" class="accommodation-card">
+                    <h3>{{ accommodation.name }}</h3>
+                    <p class="accommodation-type">{{ accommodation.type }}</p>
+                    <p class="accommodation-distance">{{ accommodation.distance }}</p>
+                    <p class="accommodation-price">{{ accommodation.price }}</p>
+                    <div class="accommodation-links">
+                        <a v-if="accommodation.website" :href="accommodation.website" target="_blank" class="btn btn-primary">
+                            Site web
+                        </a>
+                        <a v-if="accommodation.booking" :href="accommodation.booking" target="_blank" class="btn btn-secondary">
+                            Réserver
+                        </a>
+                        <a v-if="accommodation.phone" :href="'tel:' + accommodation.phone" class="btn btn-tertiary">
+                            Appeler
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Map Section -->
+        <section id="localisation" class="map-section">
+            <h2>🗺️ Localisation</h2>
+            <p>L'Auberge du Thélème se trouve à Beaumont (07170), en Ardèche.</p>
+            <div class="map-container">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d4.168042!3d44.537781!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDRCsMzInNDQuMCJTIDQ0wrAzNycyMyJX!5e0!3m2!1sfr!2sfr!4v1234567890" 
+                    width="100%" 
+                    height="400" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+            <p class="map-note">
+                <small>💡 Vous pouvez cliquer sur la carte pour l'agrandir et obtenir un itinéraire personnalisé.</small>
+            </p>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact-section">
+            <h2>📞 Contact</h2>
+            <div class="contact-content">
+                <p>Pour toute question concernant l'événement, n'hésitez pas à me contacter :</p>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <span class="icon">👤</span>
+                        <span>Bihane</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">📧</span>
+                        <a :href="'mailto:' + contactEmail">{{ contactEmail }}</a>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">📱</span>
+                        <a :href="'tel:' + contactPhone">{{ contactPhone }}</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Forum Section -->
+        <section id="forum" class="forum-section">
+            <h2>💬 Forum de discussion</h2>
+            <div class="forum-container">
+                <button @click="openForum" class="btn btn-primary forum-view-btn">
+                    Voir les messages ({{ forumMessages.length }})
+                </button>
+                <div class="forum-form">
+                    <input v-model="newMessagePrenom" type="text" placeholder="Votre prénom" class="forum-input">
+                    <textarea v-model="newMessageText" placeholder="Votre message..." class="forum-input forum-textarea" rows="3"></textarea>
+                    <button @click="sendMessage" class="btn btn-secondary forum-submit" :disabled="!newMessagePrenom.trim() || !newMessageText.trim()">Poster</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Participants Section -->
+        <section id="participants" class="participants-section">
+            <h2>👥 Liste des participants</h2>
+            <div class="participants-container">
+                <div class="participants-list">
+                    <div class="participants-header">
+                        <span>Participants inscrits ({{ participants.length }})</span>
+                        <button @click="openParticipants" class="btn btn-secondary participants-view-btn">
+                            Voir la liste
+                        </button>
+                    </div>
+                </div>
+                <div class="participants-form">
+                    <h3>S'inscrire</h3>
+                    <input v-model="newParticipantNom" type="text" placeholder="Votre nom" class="forum-input">
+                    <input v-model="newParticipantPrenom" type="text" placeholder="Votre prénom" class="forum-input">
+                    <input v-model="newParticipantEmail" type="email" placeholder="Votre email" class="forum-input">
+                    <button @click="sendParticipant" class="btn btn-primary participants-submit" :disabled="!newParticipantNom.trim() || !newParticipantPrenom.trim() || !newParticipantEmail.trim()">
+                        S'inscrire
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Forum Messages Modal -->
+        <div v-if="showForumModal" class="forum-modal-overlay" @click.self="closeForum">
+            <div class="forum-modal">
+                <div class="forum-modal-header">
+                    <h2>💬 Messages du forum</h2>
+                    <button @click="closeForum" class="forum-close-btn" title="Fermer">×</button>
+                </div>
+                <div class="forum-modal-body">
+                    <div class="forum-messages-modal">
+                        <div v-for="(msg, index) in forumMessages" :key="index" class="forum-message">
+                            <div class="forum-header">
+                                <span class="forum-author">{{ msg.prenom }}</span>
+                                <span class="forum-date">{{ msg.date }}</span>
+                            </div>
+                            <p class="forum-text">{{ msg.message }}</p>
+                        </div>
+                        <p v-if="forumMessages.length === 0" class="forum-empty">Aucun message pour l'instant. Soyez le premier à poster !</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Participants Modal -->
+        <div v-if="showParticipantsModal" class="forum-modal-overlay" @click.self="closeParticipants">
+            <div class="forum-modal">
+                <div class="forum-modal-header">
+                    <h2>👥 Liste des participants</h2>
+                    <button @click="closeParticipants" class="forum-close-btn" title="Fermer">×</button>
+                </div>
+                <div class="forum-modal-body">
+                    <div class="participants-messages-modal">
+                        <div v-for="(participant, index) in participants" :key="index" class="forum-message">
+                            <div class="forum-header">
+                                <span class="forum-author">{{ participant.prenom }} {{ participant.nom }}</span>
+                                <span class="forum-date">{{ participant.date }}</span>
+                            </div>
+                        </div>
+                        <p v-if="participants.length === 0" class="forum-empty">Aucun participant inscrit pour l'instant.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>✨ Joyeux Anniversaire ! ✨</p>
+            <p class="footer-text">Site créé pour célébrer les 30 ans de Bihane</p>
+        </footer>
+
+        <!-- Floating Action Button -->
+        <button class="fab" @click="scrollToTop" title="Retour en haut">
+            ↑
+        </button>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
