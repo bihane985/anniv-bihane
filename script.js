@@ -2,7 +2,7 @@
 const { createApp } = Vue;
 
 // API Configuration
-const API_BASE_URL = 'https://a6dfc315-f92b-48cd-981b-01ae55bbabed-00-2r6mk9mlnf300.kira.replit.dev';
+const API_BASE_URL = 'https://bihane985.pythonanywhere.com';
 
 createApp({
     data() {
