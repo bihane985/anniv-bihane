@@ -272,9 +272,17 @@ createApp({
         
         window.addEventListener('scroll', () => {
             let current = '';
+            let closestDistance = Infinity;
+            const scrollCenter = window.pageYOffset + window.innerHeight / 2;
+            
             sections.forEach(section => {
-                const sectionTop = section.offsetTop - 150;
-                if (window.pageYOffset >= sectionTop) {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                const sectionCenter = sectionTop + sectionHeight / 2;
+                const distance = Math.abs(sectionCenter - scrollCenter);
+                
+                if (distance < closestDistance) {
+                    closestDistance = distance;
                     current = section.getAttribute('id');
                 }
             });
