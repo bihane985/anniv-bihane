@@ -163,8 +163,7 @@
                     <h3>S'inscrire</h3>
                     <input v-model="newParticipantNom" type="text" placeholder="Votre nom" class="forum-input">
                     <input v-model="newParticipantPrenom" type="text" placeholder="Votre prénom" class="forum-input">
-                    <input v-model="newParticipantEmail" type="email" placeholder="Votre email" class="forum-input">
-                    <button @click="sendParticipant" class="btn btn-primary participants-submit" :disabled="!newParticipantNom.trim() || !newParticipantPrenom.trim() || !newParticipantEmail.trim()">
+                    <button @click="sendParticipant" class="btn btn-primary participants-submit" :disabled="!newParticipantNom.trim() || !newParticipantPrenom.trim()">
                         S'inscrire
                     </button>
                 </div>

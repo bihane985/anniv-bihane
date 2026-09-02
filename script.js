@@ -128,7 +128,6 @@ createApp({
             participants: [],
             newParticipantNom: '',
             newParticipantPrenom: '',
-            newParticipantEmail: '',
             showParticipantsModal: false
         };
     },
@@ -168,7 +167,7 @@ createApp({
         },
         
         async sendParticipant() {
-            if (!this.newParticipantNom.trim() || !this.newParticipantPrenom.trim() || !this.newParticipantEmail.trim()) {
+            if (!this.newParticipantNom.trim() || !this.newParticipantPrenom.trim()) {
                 return;
             }
             try {
@@ -180,7 +179,7 @@ createApp({
                     body: JSON.stringify({
                         nom: this.newParticipantNom.trim(),
                         prenom: this.newParticipantPrenom.trim(),
-                        email: this.newParticipantEmail.trim()
+                        email: 'inscrit@inscrit.com'
                     })
                 });
                 const data = await response.json();
@@ -188,7 +187,6 @@ createApp({
                     this.participants.push(data.participant);
                     this.newParticipantNom = '';
                     this.newParticipantPrenom = '';
-                    this.newParticipantEmail = '';
                 }
             } catch (error) {
                 console.error('Erreur lors de l\'envoi du participant:', error);
