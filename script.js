@@ -128,7 +128,11 @@ createApp({
             participants: [],
             newParticipantNom: '',
             newParticipantPrenom: '',
-            showParticipantsModal: false
+            showParticipantsModal: false,
+            
+            // Success Modal
+            showSuccessModal: false,
+            successMessage: ''
         };
     },
     
@@ -155,6 +159,18 @@ createApp({
         },
         closeParticipants() {
             this.showParticipantsModal = false;
+        },
+        
+        // Success Modal methods
+        showSuccess(message) {
+            this.successMessage = message;
+            this.showSuccessModal = true;
+            setTimeout(() => {
+                this.showSuccessModal = false;
+            }, 3000);
+        },
+        closeSuccess() {
+            this.showSuccessModal = false;
         },
         async fetchParticipants() {
             try {
@@ -185,6 +201,7 @@ createApp({
                 const data = await response.json();
                 if (data.success) {
                     this.participants.push(data.participant);
+                    this.showSuccess(`Inscription validée, ${this.newParticipantPrenom} !`);
                     this.newParticipantNom = '';
                     this.newParticipantPrenom = '';
                 }
@@ -221,6 +238,7 @@ createApp({
                 const data = await response.json();
                 if (data.success) {
                     this.forumMessages.push(data.message);
+                    this.showSuccess('Message envoyé !');
                     this.newMessagePrenom = '';
                     this.newMessageText = '';
                 }

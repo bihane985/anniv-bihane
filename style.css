@@ -1223,3 +1223,51 @@ button:focus {
         transform: scale(1);
     }
 }
+
+/* Success Modal styles */
+.success-modal {
+    background: white;
+    padding: 30px 40px;
+    border-radius: var(--border-radius);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.success-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.success-content h2 {
+    color: var(--primary);
+    margin: 0 0 10px 0;
+    font-size: 1.8rem;
+}
+
+.success-content p {
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    margin: 0 0 20px 0;
+}
+
+.success-ok {
+    padding: 10px 24px;
+    font-size: 1rem;
+    min-width: 120px;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}

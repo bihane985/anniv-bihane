@@ -226,6 +226,17 @@
             </div>
         </div>
 
+        <!-- Success Modal -->
+        <div v-if="showSuccessModal" class="forum-modal-overlay" @click.self="closeSuccess">
+            <div class="success-modal">
+                <div class="success-content">
+                    <h2>✅ Succès !</h2>
+                    <p>{{ successMessage }}</p>
+                    <button @click="closeSuccess" class="btn btn-primary success-ok">OK</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <footer class="footer">
             <p>✨ Joyeux Anniversaire ! ✨</p>
