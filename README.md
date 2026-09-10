@@ -10,7 +10,7 @@ Anniv_du_B/
 ├── style.css    # Styles CSS avec variables et responsive design
 ├── script.js    # Logique Vue.js avec les données
 ├── .gitignore   # Fichiers à ignorer
-└── README.md    # Ce fichier
+└── README.md    # Ce fichier est le bon
 ```
 
 ## Utilisation
