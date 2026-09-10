@@ -18,6 +18,7 @@
             <ul class="nav-list desktop-nav" id="nav-list">
                 <li class="nav-item"><a href="#info" class="nav-link">Informations</a></li>
                 <li class="nav-item"><a href="#hebergements" class="nav-link">Hébergements</a></li>
+                <li class="nav-item"><a href="#photos" class="nav-link">Photos</a></li>
                 <li class="nav-item"><a href="#localisation" class="nav-link">Localisation</a></li>
                 <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
                 <li class="nav-item"><a href="#participants" class="nav-link">Participants</a></li>
@@ -30,6 +31,7 @@
             <ul class="mobile-nav-list">
                 <li class="nav-item"><a href="#info" class="nav-link">Informations</a></li>
                 <li class="nav-item"><a href="#hebergements" class="nav-link">Hébergements</a></li>
+                <li class="nav-item"><a href="#photos" class="nav-link">Photos</a></li>
                 <li class="nav-item"><a href="#localisation" class="nav-link">Localisation</a></li>
                 <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
                 <li class="nav-item"><a href="#participants" class="nav-link">Participants</a></li>
@@ -110,6 +112,47 @@
             </div>
         </section>
 
+        <!-- Photos Section -->
+        <section id="photos" class="photos-section">
+            <h2>📸 Galerie Photo</h2>
+            <p class="section-description">
+                Partagez vos plus beaux moments de l'événement.
+            </p>
+            <div class="photos-grid">
+                <p v-if="photos.length === 0" class="photos-placeholder">Aucune photo pour l'instant. Soyez le premier à en partager !</p>
+                <div v-for="(photo, index) in photos" :key="index" class="photo-card">
+                    <div class="photo-image-placeholder" v-if="!photo.url">📷</div>
+                    <img :src="photo.url" :alt="photo.prenom" class="photo-image" v-if="photo.url">
+                    <p class="photo-author">par {{ photo.prenom }}</p>
+                </div>
+            </div>
+            <button @click="openPhotosModal" class="btn btn-primary add-photo-btn">+ Ajouter une photo</button>
+        </section>
+
+        <!-- Photos Upload Modal -->
+        <div v-if="showPhotosModal" class="forum-modal-overlay" @click.self="closePhotosModal">
+            <div class="forum-modal">
+                <div class="forum-modal-header">
+                    <h2>📸 Ajouter une photo</h2>
+                    <button @click="closePhotosModal" class="forum-close-btn" title="Fermer">×</button>
+                </div>
+                <div class="forum-modal-body">
+                    <div class="modal-photos-form">
+                        <input v-model="newPhotoPrenom" type="text" placeholder="Votre prénom" class="forum-input">
+                        <div class="file-upload-wrapper">
+                            <input type="file" @change="handlePhotoUpload" accept="image/*" id="photo-upload" class="file-input">
+                            <label for="photo-upload" class="btn btn-secondary file-upload-btn">
+                                {{ photoFile ? photoFile.name : 'Choisir une photo' }}
+                            </label>
+                        </div>
+                        <button @click="sendPhoto" class="btn btn-primary modal-submit" :disabled="isPhotoSendDisabled" :class="{ 'btn-disabled': isPhotoSendDisabled }">
+                            Envoyer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Map Section -->
         <section id="localisation" class="map-section">
             <h2>🗺️ Localisation</h2>
@@ -163,7 +206,7 @@
                     <h3>S'inscrire</h3>
                     <input v-model="newParticipantNom" type="text" placeholder="Votre nom" class="forum-input">
                     <input v-model="newParticipantPrenom" type="text" placeholder="Votre prénom" class="forum-input">
-                    <button @click="sendParticipant" class="btn btn-primary participants-submit" :disabled="!newParticipantNom.trim() || !newParticipantPrenom.trim()">
+                    <button @click="sendParticipant" class="btn btn-primary participants-submit" :disabled="!newParticipantNom.trim() || !newParticipantPrenom.trim()" :class="{ 'btn-disabled': !newParticipantNom.trim() || !newParticipantPrenom.trim() }">
                         S'inscrire
                     </button>
                 </div>
@@ -180,7 +223,7 @@
                 <div class="forum-form">
                     <input v-model="newMessagePrenom" type="text" placeholder="Votre prénom" class="forum-input">
                     <textarea v-model="newMessageText" placeholder="Votre message..." class="forum-input forum-textarea" rows="3"></textarea>
-                    <button @click="sendMessage" class="btn btn-secondary forum-submit" :disabled="!newMessagePrenom.trim() || !newMessageText.trim()">Poster</button>
+                    <button @click="sendMessage" class="btn btn-secondary forum-submit" :disabled="!newMessagePrenom.trim() || !newMessageText.trim()" :class="{ 'btn-disabled': !newMessagePrenom.trim() || !newMessageText.trim() }">Poster</button>
                 </div>
             </div>
         </section>

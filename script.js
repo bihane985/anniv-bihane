@@ -1,8 +1,9 @@
 // ===== Vue.js Application =====
 const { createApp } = Vue;
 
-// API Configuration
+// API Configuration - Tout sur PythonAnywhere
 const API_BASE_URL = 'https://bihane985.pythonanywhere.com';
+const API_PHOTOS_URL = 'https://bihane985.pythonanywhere.com';
 
 createApp({
     data() {
@@ -132,10 +133,21 @@ createApp({
             
             // Success Modal
             showSuccessModal: false,
-            successMessage: ''
+            successMessage: '',
+            
+            // Photos
+            photos: [],
+            newPhotoPrenom: '',
+            photoFile: null,
+            showPhotosModal: false
         };
     },
     
+    computed: {
+        isPhotoSendDisabled() {
+            return !this.newPhotoPrenom.trim() || !this.photoFile;
+        }
+    },
     methods: {
         // Scroll to top function
         scrollToTop() {
@@ -171,6 +183,66 @@ createApp({
         },
         closeSuccess() {
             this.showSuccessModal = false;
+        },
+        
+        // Photos Modal methods
+        openPhotosModal() {
+            this.showPhotosModal = true;
+        },
+        closePhotosModal() {
+            this.showPhotosModal = false;
+        },
+        
+        // Photos methods
+        handlePhotoUpload(event) {
+            this.photoFile = event.target.files[0];
+        },
+        
+        async fetchPhotos() {
+            try {
+                const response = await fetch(`${API_PHOTOS_URL}/get-photos`);
+                const data = await response.json();
+                if (data.success) {
+                    this.photos = data.photos || [];
+                } else {
+                    this.photos = [];
+                    console.error('Erreur récup photos:', data.error);
+                }
+            } catch (error) {
+                console.error('Erreur réseau:', error);
+                this.photos = [];
+            }
+        },
+        
+        async sendPhoto() {
+            if (!this.newPhotoPrenom.trim() || !this.photoFile) {
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('photo', this.photoFile);
+            formData.append('prenom', this.newPhotoPrenom.trim());
+            
+            try {
+                const response = await fetch(`${API_PHOTOS_URL}/set-photo`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    this.photos.push(data.photo);
+                    this.showSuccess(`Photo envoyée par ${this.newPhotoPrenom} !`);
+                    this.newPhotoPrenom = '';
+                    this.photoFile = null;
+                    document.getElementById('photo-upload').value = '';
+                } else {
+                    this.showSuccess('Erreur : ' + (data.error || 'Inconnu'));
+                }
+            } catch (error) {
+                console.error('Erreur envoi photo:', error);
+                this.showSuccess('Erreur de connexion au serveur');
+            }
         },
         async fetchParticipants() {
             try {
@@ -275,7 +347,10 @@ createApp({
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({
+                    const navHeight = 80; // Hauteur de la navbar
+                    const targetPosition = target.offsetTop - navHeight;
+                    window.scrollTo({
+                        top: targetPosition,
                         behavior: 'smooth'
                     });
                 }
@@ -311,9 +386,10 @@ createApp({
             });
         });
         
-        // Load forum messages and participants on startup
+        // Load forum messages, participants and photos on startup
         this.fetchMessages();
         this.fetchParticipants();
+        this.fetchPhotos();
         
         // Add loaded class for animations
         document.documentElement.classList.add('loaded');
