@@ -140,10 +140,21 @@
                     <div class="modal-photos-form">
                         <input v-model="newPhotoPrenom" type="text" placeholder="Votre prénom" class="forum-input">
                         <div class="file-upload-wrapper">
-                            <input type="file" @change="handlePhotoUpload" accept="image/*" id="photo-upload" class="file-input">
-                            <label for="photo-upload" class="btn btn-secondary file-upload-btn">
-                                {{ photoFile ? photoFile.name : 'Choisir une photo' }}
-                            </label>
+                            <div class="photo-source-buttons">
+                                <input type="file" @change="handlePhotoUpload" accept="image/*" id="photo-upload" class="file-input">
+                                <label for="photo-upload" class="btn btn-secondary file-upload-btn">
+                                    🖼️ Choisir une photo
+                                </label>
+                                <!-- capture="environment" : ouvre l'appareil photo directement sur mobile -->
+                                <input type="file" @change="handlePhotoCapture" accept="image/*" capture="environment" id="photo-camera" class="file-input">
+                                <label for="photo-camera" class="btn btn-secondary file-upload-btn">
+                                    📷 Prendre une photo
+                                </label>
+                            </div>
+                            <div v-if="photoPreview" class="photo-preview-wrapper">
+                                <img :src="photoPreview" alt="Aperçu" class="photo-preview">
+                                <button @click="clearPhoto" class="photo-preview-clear" title="Retirer la photo">×</button>
+                            </div>
                         </div>
                         <button @click="sendPhoto" class="btn btn-primary modal-submit" :disabled="isPhotoSendDisabled" :class="{ 'btn-disabled': isPhotoSendDisabled }">
                             Envoyer

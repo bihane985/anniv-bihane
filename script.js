@@ -1,8 +1,11 @@
 // ===== Vue.js Application =====
 const { createApp } = Vue;
 
-// API Configuration - Tout sur PythonAnywhere
+// API Configuration
+// Messages + participants : toujours sur PythonAnywhere
 const API_BASE_URL = 'https://bihane985.pythonanywhere.com';
+// Photos : PythonAnywhere
+// Pour tester en local, remettre 'http://localhost:5000' (backend/app.py, port 5000)
 const API_PHOTOS_URL = 'https://bihane985.pythonanywhere.com';
 
 createApp({
@@ -139,6 +142,7 @@ createApp({
             photos: [],
             newPhotoPrenom: '',
             photoFile: null,
+            photoPreview: null,
             showPhotosModal: false
         };
     },
@@ -195,7 +199,39 @@ createApp({
         
         // Photos methods
         handlePhotoUpload(event) {
-            this.photoFile = event.target.files[0];
+            this.setPhotoFile(event.target.files[0]);
+        },
+
+        // Photo prise avec l'appareil : on envoie directement si le prenom est deja rempli
+        handlePhotoCapture(event) {
+            this.setPhotoFile(event.target.files[0]);
+            if (this.photoFile && this.newPhotoPrenom.trim()) {
+                this.sendPhoto();
+            }
+        },
+
+        setPhotoFile(file) {
+            if (!file) return;
+            this.photoFile = file;
+            // Libere l'apercu precedent pour ne pas accumuler d'objets en memoire
+            if (this.photoPreview) URL.revokeObjectURL(this.photoPreview);
+            this.photoPreview = URL.createObjectURL(file);
+        },
+
+        clearPhoto() {
+            if (this.photoPreview) URL.revokeObjectURL(this.photoPreview);
+            this.photoPreview = null;
+            this.photoFile = null;
+            this.resetPhotoInputs();
+        },
+
+        // Remet les deux champs fichier a zero, sinon reselectionner
+        // la meme photo ne declenche pas l'evenement change
+        resetPhotoInputs() {
+            ['photo-upload', 'photo-camera'].forEach(id => {
+                const input = document.getElementById(id);
+                if (input) input.value = '';
+            });
         },
         
         async fetchPhotos() {
@@ -234,8 +270,7 @@ createApp({
                     this.photos.push(data.photo);
                     this.showSuccess(`Photo envoyée par ${this.newPhotoPrenom} !`);
                     this.newPhotoPrenom = '';
-                    this.photoFile = null;
-                    document.getElementById('photo-upload').value = '';
+                    this.clearPhoto();
                 } else {
                     this.showSuccess('Erreur : ' + (data.error || 'Inconnu'));
                 }
