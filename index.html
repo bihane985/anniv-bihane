@@ -122,8 +122,7 @@
                 <p v-if="photos.length === 0" class="photos-placeholder">Aucune photo pour l'instant. Soyez le premier à en partager !</p>
                 <div v-for="(photo, index) in photos" :key="index" class="photo-card">
                     <div class="photo-image-placeholder" v-if="!photo.url">📷</div>
-                    <img :src="photo.url" :alt="photo.prenom" class="photo-image" v-if="photo.url">
-                    <p class="photo-author">par {{ photo.prenom }}</p>
+                    <img :src="photo.url" alt="Photo de l'événement" class="photo-image" v-if="photo.url">
                 </div>
             </div>
             <button @click="openPhotosModal" class="btn btn-primary add-photo-btn">+ Ajouter une photo</button>
@@ -138,7 +137,7 @@
                 </div>
                 <div class="forum-modal-body">
                     <div class="modal-photos-form">
-                        <input v-model="newPhotoPrenom" type="text" placeholder="Votre prénom" class="forum-input">
+                        <p class="modal-hint">Choisissez une photo ou prenez-en une : elle est envoyée aussitôt.</p>
                         <div class="file-upload-wrapper">
                             <div class="photo-source-buttons">
                                 <input type="file" @change="handlePhotoUpload" accept="image/*" id="photo-upload" class="file-input">
@@ -153,12 +152,9 @@
                             </div>
                             <div v-if="photoPreview" class="photo-preview-wrapper">
                                 <img :src="photoPreview" alt="Aperçu" class="photo-preview">
-                                <button @click="clearPhoto" class="photo-preview-clear" title="Retirer la photo">×</button>
+                                <p v-if="isSendingPhoto" class="photo-sending">Envoi en cours…</p>
                             </div>
                         </div>
-                        <button @click="sendPhoto" class="btn btn-primary modal-submit" :disabled="isPhotoSendDisabled" :class="{ 'btn-disabled': isPhotoSendDisabled }">
-                            Envoyer
-                        </button>
                     </div>
                 </div>
             </div>

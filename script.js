@@ -140,18 +140,13 @@ createApp({
             
             // Photos
             photos: [],
-            newPhotoPrenom: '',
             photoFile: null,
             photoPreview: null,
+            isSendingPhoto: false,
             showPhotosModal: false
         };
     },
     
-    computed: {
-        isPhotoSendDisabled() {
-            return !this.newPhotoPrenom.trim() || !this.photoFile;
-        }
-    },
     methods: {
         // Scroll to top function
         scrollToTop() {
@@ -198,16 +193,13 @@ createApp({
         },
         
         // Photos methods
+        // Galerie et appareil photo : dans les deux cas l'envoi part tout seul
         handlePhotoUpload(event) {
             this.setPhotoFile(event.target.files[0]);
         },
 
-        // Photo prise avec l'appareil : on envoie directement si le prenom est deja rempli
         handlePhotoCapture(event) {
             this.setPhotoFile(event.target.files[0]);
-            if (this.photoFile && this.newPhotoPrenom.trim()) {
-                this.sendPhoto();
-            }
         },
 
         setPhotoFile(file) {
@@ -216,6 +208,7 @@ createApp({
             // Libere l'apercu precedent pour ne pas accumuler d'objets en memoire
             if (this.photoPreview) URL.revokeObjectURL(this.photoPreview);
             this.photoPreview = URL.createObjectURL(file);
+            this.sendPhoto();
         },
 
         clearPhoto() {
@@ -251,32 +244,38 @@ createApp({
         },
         
         async sendPhoto() {
-            if (!this.newPhotoPrenom.trim() || !this.photoFile) {
+            // isSendingPhoto empeche un double envoi si on reclique pendant l'upload
+            if (!this.photoFile || this.isSendingPhoto) {
                 return;
             }
-            
+
+            this.isSendingPhoto = true;
+
             const formData = new FormData();
             formData.append('photo', this.photoFile);
-            formData.append('prenom', this.newPhotoPrenom.trim());
-            
+
             try {
                 const response = await fetch(`${API_PHOTOS_URL}/set-photo`, {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const data = await response.json();
                 if (data.success) {
-                    this.photos.push(data.photo);
-                    this.showSuccess(`Photo envoyée par ${this.newPhotoPrenom} !`);
-                    this.newPhotoPrenom = '';
+                    this.showSuccess('Photo envoyée, merci !');
                     this.clearPhoto();
+                    this.closePhotosModal();
+                    // On relit la liste cote serveur : c'est lui qui decide
+                    // quelles sont les 3 dernieres photos
+                    await this.fetchPhotos();
                 } else {
                     this.showSuccess('Erreur : ' + (data.error || 'Inconnu'));
                 }
             } catch (error) {
                 console.error('Erreur envoi photo:', error);
                 this.showSuccess('Erreur de connexion au serveur');
+            } finally {
+                this.isSendingPhoto = false;
             }
         },
         async fetchParticipants() {
