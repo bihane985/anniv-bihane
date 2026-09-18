@@ -125,8 +125,46 @@
                     <img :src="photo.url" alt="Photo de l'événement" class="photo-image" v-if="photo.url">
                 </div>
             </div>
-            <button @click="openPhotosModal" class="btn btn-primary add-photo-btn">+ Ajouter une photo</button>
+            <div class="photos-actions">
+                <button @click="openPhotosModal" class="btn btn-primary add-photo-btn">+ Ajouter une photo</button>
+                <button v-if="photosTotal > 0" @click="openAllPhotos" class="btn btn-secondary add-photo-btn">
+                    🖼️ Voir toutes les photos ({{ photosTotal }})
+                </button>
+            </div>
         </section>
+
+        <!-- Galerie complète -->
+        <div v-if="showAllPhotosModal" class="forum-modal-overlay" @click.self="closeAllPhotos">
+            <div class="forum-modal gallery-modal">
+                <div class="forum-modal-header">
+                    <h2>🖼️ Toutes les photos ({{ allPhotos.length }})</h2>
+                    <button @click="closeAllPhotos" class="forum-close-btn" title="Fermer">×</button>
+                </div>
+                <div class="forum-modal-body">
+                    <p v-if="isLoadingAllPhotos" class="gallery-status">Chargement…</p>
+                    <p v-else-if="allPhotos.length === 0" class="gallery-status">Aucune photo pour l'instant.</p>
+                    <div v-else class="gallery-grid">
+                        <img v-for="(photo, index) in allPhotos" :key="photo.filename"
+                             :src="photo.url" alt="Photo de l'événement"
+                             class="gallery-thumb" @click="openViewer(index)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visionneuse plein écran : flèches, clavier, glissement tactile -->
+        <div v-if="viewerIndex !== null" class="viewer-overlay" @click.self="closeViewer"
+             @touchstart="onViewerTouchStart" @touchend="onViewerTouchEnd">
+            <button @click="closeViewer" class="viewer-close" title="Fermer">×</button>
+
+            <button v-if="allPhotos.length > 1" @click.stop="prevPhoto" class="viewer-nav viewer-prev" title="Précédente">‹</button>
+
+            <img :src="allPhotos[viewerIndex].url" alt="Photo de l'événement" class="viewer-image">
+
+            <button v-if="allPhotos.length > 1" @click.stop="nextPhoto" class="viewer-nav viewer-next" title="Suivante">›</button>
+
+            <p class="viewer-counter">{{ viewerIndex + 1 }} / {{ allPhotos.length }}</p>
+        </div>
 
         <!-- Photos Upload Modal -->
         <div v-if="showPhotosModal" class="forum-modal-overlay" @click.self="closePhotosModal">
@@ -286,12 +324,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>✨ Joyeux Anniversaire ! ✨</p>
-            <p class="footer-text">Site créé pour célébrer les 30 ans de Bihane</p>
-        </footer>
 
         <!-- Floating Action Button -->
         <button class="fab" @click="scrollToTop" title="Retour en haut">

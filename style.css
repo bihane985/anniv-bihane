@@ -757,23 +757,6 @@ a:hover {
     opacity: 0.75;
 }
 
-/* ===== Footer =====
-.footer {
-    padding: 40px 20px;
-    background: var(--gradient-hero);
-    text-align: center;
-    color: var(--bg-white);
-}
-
-.footer p {
-    margin-bottom: 10px;
-}
-
-.footer-text {
-    font-size: var(--font-size-sm);
-    opacity: 0.8;
-}
-
 /* ===== Floating Action Button ===== */
 .fab {
     position: fixed;
@@ -1439,4 +1422,142 @@ button:focus {
 .btn-disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* ===== Galerie complète ===== */
+.photos-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* Plus large que les autres modales : c'est une grille d'images */
+.gallery-modal {
+    max-width: 900px;
+    max-height: 85vh;
+}
+
+.gallery-status {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-dark);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+
+.gallery-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.gallery-thumb:hover {
+    transform: scale(1.04);
+}
+
+@media (max-width: 480px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+
+/* ===== Visionneuse plein écran ===== */
+/* z-index au-dessus des modales (2000) pour passer par-dessus la galerie */
+.viewer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    padding: 20px;
+    /* Empêche le navigateur mobile de préempter le geste horizontal */
+    touch-action: pan-y;
+}
+
+.viewer-image {
+    max-width: 92vw;
+    max-height: 82vh;
+    object-fit: contain;
+    border-radius: 6px;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.viewer-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 2.2rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.viewer-nav:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.viewer-prev { left: 16px; }
+.viewer-next { right: 16px; }
+
+.viewer-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.viewer-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.viewer-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #fff;
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin: 0;
+}
+
+/* Sur mobile le glissement remplace les flèches, qui mangeraient l'image */
+@media (max-width: 600px) {
+    .viewer-nav {
+        width: 42px;
+        height: 42px;
+        font-size: 1.8rem;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    .viewer-prev { left: 4px; }
+    .viewer-next { right: 4px; }
 }

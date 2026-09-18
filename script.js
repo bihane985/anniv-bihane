@@ -140,6 +140,13 @@ createApp({
             
             // Photos
             photos: [],
+            photosTotal: 0,
+            allPhotos: [],
+            showAllPhotosModal: false,
+            isLoadingAllPhotos: false,
+            viewerIndex: null,
+            touchStartX: 0,
+            touchStartY: 0,
             photoFile: null,
             photoPreview: null,
             isSendingPhoto: false,
@@ -233,14 +240,87 @@ createApp({
                 const data = await response.json();
                 if (data.success) {
                     this.photos = data.photos || [];
+                    this.photosTotal = data.total || this.photos.length;
                 } else {
                     this.photos = [];
+                    this.photosTotal = 0;
                     console.error('Erreur récup photos:', data.error);
                 }
             } catch (error) {
                 console.error('Erreur réseau:', error);
                 this.photos = [];
+                this.photosTotal = 0;
             }
+        },
+
+        // ===== Galerie complète =====
+
+        async openAllPhotos() {
+            this.showAllPhotosModal = true;
+            this.isLoadingAllPhotos = true;
+            try {
+                const response = await fetch(`${API_PHOTOS_URL}/get-photos?limit=all`);
+                const data = await response.json();
+                this.allPhotos = data.success ? (data.photos || []) : [];
+                if (data.success) this.photosTotal = data.total || this.allPhotos.length;
+            } catch (error) {
+                console.error('Erreur récup galerie:', error);
+                this.allPhotos = [];
+            } finally {
+                this.isLoadingAllPhotos = false;
+            }
+        },
+
+        closeAllPhotos() {
+            this.showAllPhotosModal = false;
+            this.viewerIndex = null;
+        },
+
+        // ===== Visionneuse =====
+
+        openViewer(index) {
+            this.viewerIndex = index;
+        },
+
+        closeViewer() {
+            this.viewerIndex = null;
+        },
+
+        // Le modulo fait boucler la galerie : après la dernière on revient à la première
+        nextPhoto() {
+            if (this.allPhotos.length === 0) return;
+            this.viewerIndex = (this.viewerIndex + 1) % this.allPhotos.length;
+        },
+
+        prevPhoto() {
+            if (this.allPhotos.length === 0) return;
+            this.viewerIndex = (this.viewerIndex - 1 + this.allPhotos.length) % this.allPhotos.length;
+        },
+
+        onViewerTouchStart(event) {
+            this.touchStartX = event.changedTouches[0].clientX;
+            this.touchStartY = event.changedTouches[0].clientY;
+        },
+
+        onViewerTouchEnd(event) {
+            const deltaX = event.changedTouches[0].clientX - this.touchStartX;
+            const deltaY = event.changedTouches[0].clientY - this.touchStartY;
+            // On ignore les gestes trop courts, et ceux plus verticaux
+            // qu'horizontaux (l'utilisateur fait défiler, il ne navigue pas)
+            if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+            if (deltaX < 0) {
+                this.nextPhoto();
+            } else {
+                this.prevPhoto();
+            }
+        },
+
+        // Flèches et Échap pendant que la visionneuse est ouverte
+        onViewerKeydown(event) {
+            if (this.viewerIndex === null) return;
+            if (event.key === 'ArrowRight') this.nextPhoto();
+            else if (event.key === 'ArrowLeft') this.prevPhoto();
+            else if (event.key === 'Escape') this.closeViewer();
         },
         
         async sendPhoto() {
@@ -419,6 +499,9 @@ createApp({
                 }
             });
         });
+        
+        // Navigation clavier de la visionneuse
+        window.addEventListener('keydown', this.onViewerKeydown);
         
         // Load forum messages, participants and photos on startup
         this.fetchMessages();
