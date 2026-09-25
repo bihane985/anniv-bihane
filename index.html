@@ -74,9 +74,12 @@
                     <h3>🚗 Accès</h3>
                     <p v-html="accessInfo"></p>
                 </div>
-                <div class="info-card info-card-coming-soon">
+                <div class="info-card">
                     <h3>🍽️ Menu</h3>
                     <p v-html="menuInfo"></p>
+                    <button @click="openMenuMessage" class="btn btn-secondary menu-signal-btn">
+                        ⚠️ Une allergie, un régime ?
+                    </button>
                 </div>
                 <div class="info-card">
                     <h3>🎁 Cadeaux</h3>
@@ -132,6 +135,31 @@
                 </button>
             </div>
         </section>
+
+        <!-- Signalement menu (allergie, régime) -->
+        <div v-if="showMenuMessageModal" class="forum-modal-overlay" @click.self="closeMenuMessage">
+            <div class="forum-modal">
+                <div class="forum-modal-header">
+                    <h2>⚠️ Un souci avec le menu ?</h2>
+                    <button @click="closeMenuMessage" class="forum-close-btn" title="Fermer">×</button>
+                </div>
+                <div class="forum-modal-body">
+                    <div class="modal-photos-form">
+                        <p class="modal-hint">
+                            Allergie, régime particulier, question sur un plat :
+                            dites-le moi, je transmettrai à l'auberge et je reviens vers vous.
+                        </p>
+                        <input v-model="menuMessagePrenom" type="text" placeholder="Votre prénom" class="forum-input">
+                        <input v-model="menuMessageContact" type="text" placeholder="Votre email ou téléphone (facultatif)" class="forum-input">
+                        <textarea v-model="menuMessageText" placeholder="Votre message…" class="forum-input forum-textarea" rows="4"></textarea>
+                        <button @click="sendMenuMessage" class="btn btn-primary modal-submit"
+                                :disabled="isMenuMessageDisabled" :class="{ 'btn-disabled': isMenuMessageDisabled }">
+                            {{ isSendingMenuMessage ? 'Envoi…' : 'Envoyer' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Galerie complète -->
         <div v-if="showAllPhotosModal" class="forum-modal-overlay" @click.self="closeAllPhotos">

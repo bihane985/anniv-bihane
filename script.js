@@ -39,7 +39,18 @@ createApp({
             `,
             
             menuInfo: `
-                <em>Les informations sur le menu sont à venir...</em>
+                <strong>Cap sur La Réunion !</strong><br><br>
+                <strong>🥟 Apéritif</strong><br>
+                Samoussas, bouchons et autres petits délices créoles.
+                <br><br>
+                <strong>🍛 Plat</strong><br>
+                Rougail saucisse, riz et grains, comme là-bas.
+                <br><br>
+                <strong>🍹 Boissons</strong><br>
+                Punch et marquisette pour l'apéritif, champagne et vin pour la suite.
+                <br><br>
+                <strong>🎂 Dessert</strong><br>
+                Le gâteau d'anniversaire, évidemment !
             `,
             
             giftsInfo: `
@@ -138,6 +149,13 @@ createApp({
             showSuccessModal: false,
             successMessage: '',
             
+            // Signalement menu
+            showMenuMessageModal: false,
+            menuMessagePrenom: '',
+            menuMessageContact: '',
+            menuMessageText: '',
+            isSendingMenuMessage: false,
+            
             // Photos
             photos: [],
             photosTotal: 0,
@@ -152,6 +170,14 @@ createApp({
             isSendingPhoto: false,
             showPhotosModal: false
         };
+    },
+    
+    computed: {
+        isMenuMessageDisabled() {
+            return !this.menuMessagePrenom.trim()
+                || !this.menuMessageText.trim()
+                || this.isSendingMenuMessage;
+        }
     },
     
     methods: {
@@ -189,6 +215,46 @@ createApp({
         },
         closeSuccess() {
             this.showSuccessModal = false;
+        },
+        
+        // ===== Signalement menu =====
+        openMenuMessage() {
+            this.showMenuMessageModal = true;
+        },
+        closeMenuMessage() {
+            this.showMenuMessageModal = false;
+        },
+        
+        async sendMenuMessage() {
+            if (this.isMenuMessageDisabled) return;
+            
+            this.isSendingMenuMessage = true;
+            try {
+                const response = await fetch(`${API_BASE_URL}/set-menu-message`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prenom: this.menuMessagePrenom.trim(),
+                        contact: this.menuMessageContact.trim(),
+                        message: this.menuMessageText.trim()
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    this.showSuccess("Message bien reçu, merci ! Je transmets à l’auberge et je reviens vers vous.");
+                    this.menuMessagePrenom = '';
+                    this.menuMessageContact = '';
+                    this.menuMessageText = '';
+                    this.closeMenuMessage();
+                } else {
+                    this.showSuccess('Erreur : ' + (data.error || 'Inconnu'));
+                }
+            } catch (error) {
+                console.error('Erreur envoi message menu:', error);
+                this.showSuccess('Erreur de connexion au serveur');
+            } finally {
+                this.isSendingMenuMessage = false;
+            }
         },
         
         // Photos Modal methods

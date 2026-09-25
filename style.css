@@ -345,18 +345,6 @@ a:hover {
     transition: var(--transition);
 }
 
-.info-card-coming-soon {
-    opacity: 0.7;
-    background: var(--bg-light);
-    border: 1px solid rgba(147, 198, 214, 0.1);
-}
-
-.info-card-coming-soon:hover {
-    opacity: 0.85;
-    transform: none;
-    box-shadow: var(--shadow-sm);
-}
-
 .info-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-md);
@@ -1560,4 +1548,11 @@ button:focus {
     }
     .viewer-prev { left: 4px; }
     .viewer-next { right: 4px; }
+}
+
+/* Bouton de signalement dans la carte menu */
+.menu-signal-btn {
+    margin-top: 16px;
+    width: 100%;
+    font-size: 0.9rem;
 }
